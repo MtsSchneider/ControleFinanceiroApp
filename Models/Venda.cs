@@ -3,11 +3,10 @@ using System.Collections.Generic;
 
 namespace ControleFinanceiroApp.Models
 {
-    // Registra uma venda a prazo
     public class Venda
     {
         public int Id { get; set; }
-        public int UsuarioId { get; set; } // Vincula ao usuário
+        public int UsuarioId { get; set; }
 
         [Required]
         [StringLength(100)]
@@ -25,10 +24,9 @@ namespace ControleFinanceiroApp.Models
         [Required]
         public int NumeroParcelas { get; set; }
 
-        public decimal SaldoDevedor { get; set; } // O quanto falta pagar
+        public decimal SaldoDevedor { get; set; }
         public string StatusVenda { get; set; } = "Pendente";
         
-        // Propriedade de navegação para as parcelas
         public ICollection<Parcela>? Parcelas { get; set; }
     }
 }

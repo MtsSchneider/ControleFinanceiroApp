@@ -6,7 +6,7 @@ using ControleFinanceiroApp.Models;
 using System.Security.Claims;
 using System.ComponentModel.DataAnnotations;
 
-namespace ControleFinanceiroApp.Pages.RendaExtra.Produtos // <--- NOVO NAMESPACE
+namespace ControleFinanceiroApp.Pages.RendaExtra.Produtos
 {
     [Authorize]
     public class CriarProdutoModel : PageModel
@@ -19,7 +19,6 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Produtos // <--- NOVO NAMESPACE
             _context = context;
         }
 
-        // ... o resto do código InputModel e OnPostAsync continua aqui ...
         [BindProperty]
         public ProdutoInputModel Input { get; set; } = new ProdutoInputModel();
 
@@ -49,7 +48,7 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Produtos // <--- NOVO NAMESPACE
 
         public void OnGet()
         {
-            // Nada a fazer no carregamento
+        
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -57,7 +56,6 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Produtos // <--- NOVO NAMESPACE
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userIdString))
             {
-                // Se por algum motivo perder o login, redireciona para a página de login
                 return RedirectToPage("/Account/Login"); 
             }
             _userId = int.Parse(userIdString);
@@ -79,7 +77,6 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Produtos // <--- NOVO NAMESPACE
             _context.Produtos.Add(novoProduto);
             await _context.SaveChangesAsync();
 
-            // Redireciona para a lista de produtos (IndexModel)
             return RedirectToPage("./Index"); 
         }
     }

@@ -5,7 +5,7 @@ namespace ControleFinanceiroApp.Models
     public class Produto
     {
         public int Id { get; set; }
-        public int UsuarioId { get; set; } // Vínculo com o usuário
+        public int UsuarioId { get; set; } 
 
         [Required]
         [StringLength(100)]
@@ -21,8 +21,5 @@ namespace ControleFinanceiroApp.Models
         [Required]
         [DataType(DataType.Currency)]
         public decimal PrecoVenda { get; set; }
-        
-        // Propriedade para controle financeiro dos compradores (opcional no momento)
-        // Por enquanto, focaremos no estoque.
     }
 }

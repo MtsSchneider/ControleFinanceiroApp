@@ -29,17 +29,13 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
             if (string.IsNullOrEmpty(userIdString)) return;
             _userId = int.Parse(userIdString);
 
-            // 1. Busca Vendas Pendentes (StatusVenda != Pago)
             VendasPendentes = await _context.Vendas
                 .Where(v => v.UsuarioId == _userId && v.StatusVenda != "Pago")
                 .OrderByDescending(v => v.DataVenda)
                 .ToListAsync();
 
-            // 2. Calcula o Total Devedor
             TotalDevedor = VendasPendentes.Sum(v => v.SaldoDevedor);
 
-            // 3. Conta Parcelas Atrasadas
-            // Inclui Venda para ter certeza que é do usuário logado
             ParcelasAtrasadas = await _context.Parcelas
                 .Include(p => p.Venda)
                 .Where(p => p.Venda!.UsuarioId == _userId && 

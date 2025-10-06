@@ -6,7 +6,7 @@ using ControleFinanceiroApp.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication.Cookies; // Adicionado para garantir a referência
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ControleFinanceiroApp.Pages.Account
 {
@@ -25,7 +25,6 @@ namespace ControleFinanceiroApp.Pages.Account
 
         public string? ReturnUrl { get; set; }
 
-        // Modelo de dados que recebe as informações do formulário
         public class InputModel
         {
             [Required(ErrorMessage = "O E-mail é obrigatório.")]
@@ -54,7 +53,6 @@ namespace ControleFinanceiroApp.Pages.Account
                 return Page();
             }
 
-            // 1. Encontrar o usuário
             var usuario = _context.Usuarios.FirstOrDefault(u => u.Email == Input.Email);
 
             if (usuario == null)
@@ -63,7 +61,6 @@ namespace ControleFinanceiroApp.Pages.Account
                 return Page();
             }
 
-            // 2. Verificar a senha (Compara a senha digitada com o Hash no BD)
             var result = _passwordHasher.VerifyHashedPassword(usuario, usuario.SenhaHash!, Input.Senha!);
 
             if (result == PasswordVerificationResult.Failed)
@@ -72,7 +69,6 @@ namespace ControleFinanceiroApp.Pages.Account
                 return Page();
             }
             
-            // 3. Criar os CLAMS (Identidade e Permissões)
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
@@ -89,10 +85,8 @@ namespace ControleFinanceiroApp.Pages.Account
                 ExpiresUtc = Input.RememberMe ? DateTimeOffset.UtcNow.AddDays(7) : DateTimeOffset.UtcNow.AddHours(24)
             };
 
-            // 4. Efetuar o LOGIN!
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-            // 5. Redirecionar
             return LocalRedirect(ReturnUrl);
         }
     }

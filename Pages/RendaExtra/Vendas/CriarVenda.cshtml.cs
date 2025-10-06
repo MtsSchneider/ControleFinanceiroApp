@@ -20,11 +20,8 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
             _context = context;
         }
 
-        // Propriedade que recebe os dados do formulário
         [BindProperty]
         public VendaInputModel Input { get; set; } = new VendaInputModel();
-
-        // Estrutura do formulário
         public class VendaInputModel
         {
             [Required(ErrorMessage = "O nome do comprador é obrigatório.")]
@@ -51,13 +48,11 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
 
         public void OnGet()
         {
-            // Define a data atual como padrão para a primeira parcela
-            Input.DataPrimeiraParcela = DateTime.Today.AddDays(30); // Sugere 30 dias para a primeira
+            Input.DataPrimeiraParcela = DateTime.Today.AddDays(30);
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            // Obtém o ID do usuário de forma segura
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userIdString)) return RedirectToPage("/Account/Login");
             _userId = int.Parse(userIdString);
@@ -67,7 +62,6 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
                 return Page();
             }
 
-            // 1. Cria a Venda Principal
             var novaVenda = new Venda
             {
                 UsuarioId = _userId,
@@ -75,13 +69,11 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
                 DataVenda = DateTime.Today,
                 ValorTotal = Input.ValorTotal,
                 NumeroParcelas = Input.NumeroParcelas,
-                SaldoDevedor = Input.ValorTotal, // Saldo inicial é o valor total
+                SaldoDevedor = Input.ValorTotal, 
                 StatusVenda = "Pendente" 
             };
             
-            // 2. Calcular e Gerar as Parcelas
             var parcelas = new List<Parcela>();
-            // Divide o valor total pelo número de parcelas, arredondando para 2 casas decimais
             decimal valorParcela = Math.Round(Input.ValorTotal / Input.NumeroParcelas, 2);
             DateTime dataVencimento = Input.DataPrimeiraParcela;
             
@@ -91,18 +83,15 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
                 {
                     NumeroParcela = i,
                     ValorParcela = valorParcela,
-                    // Adiciona i-1 meses à data da primeira parcela
                     DataVencimento = dataVencimento.AddMonths(i - 1), 
                     Status = "Aberta"
                 });
             }
             
-            // 3. Vínculo e Salvamento
             novaVenda.Parcelas = parcelas;
             _context.Vendas.Add(novaVenda);
             await _context.SaveChangesAsync();
 
-            // Redireciona para a lista de devedores
             return RedirectToPage("./DevedoresIndex"); 
         }
     }

@@ -6,7 +6,7 @@ using ControleFinanceiroApp.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
-[Authorize] // Protege a página
+[Authorize]
 public class CriarModel : PageModel
 {
     private readonly AppDbContext _context;
@@ -19,7 +19,6 @@ public class CriarModel : PageModel
     [BindProperty]
     public LancamentoInputModel Input { get; set; } = new LancamentoInputModel();
     
-    // ViewModel para o formulário
     public class LancamentoInputModel
     {
         [Required(ErrorMessage = "A descrição é obrigatória.")]
@@ -46,7 +45,6 @@ public class CriarModel : PageModel
 
     public void OnGet()
     {
-        // Define a data atual como padrão no formulário
         Input.DataVencimento = DateTime.Today;
     }
 
@@ -57,7 +55,6 @@ public class CriarModel : PageModel
             return Page();
         }
 
-        // 1. Obter o ID do usuário logado
         var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrEmpty(userIdString))
         {
@@ -65,7 +62,6 @@ public class CriarModel : PageModel
         }
         int userId = int.Parse(userIdString);
 
-        // 2. Criar o objeto Lancamento a partir do Input do formulário
         var novoLancamento = new Lancamento
         {
             UsuarioId = userId,
@@ -76,11 +72,9 @@ public class CriarModel : PageModel
             Status = Input.Status
         };
 
-        // 3. Salvar no banco de dados
         _context.Lancamentos.Add(novoLancamento);
         await _context.SaveChangesAsync();
 
-        // 4. Redirecionar para o Dashboard (Index)
         return RedirectToPage("/Index");
     }
 }
