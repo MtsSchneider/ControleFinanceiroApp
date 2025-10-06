@@ -38,10 +38,29 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
 
             ParcelasAtrasadas = await _context.Parcelas
                 .Include(p => p.Venda)
-                .Where(p => p.Venda!.UsuarioId == _userId && 
-                            p.Status == "Aberta" && 
+                .Where(p => p.Venda!.UsuarioId == _userId &&
+                            p.Status == "Aberta" &&
                             p.DataVencimento < DateTime.Today)
                 .CountAsync();
+        }
+
+        public async Task<IActionResult> OnPostDeleteVendaAsync(int id)
+        {
+    
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userIdString)) return RedirectToPage("/Account/Login");
+            _userId = int.Parse(userIdString);
+
+            var venda = await _context.Vendas
+                .Include(v => v.Parcelas) 
+                .FirstOrDefaultAsync(v => v.Id == id && v.UsuarioId == _userId);
+
+            if (venda == null) return RedirectToPage();
+
+            _context.Vendas.Remove(venda);
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage();
         }
     }
 }
