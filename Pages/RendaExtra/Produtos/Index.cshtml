@@ -1,0 +1,60 @@
+@page
+@model ControleFinanceiroApp.Pages.RendaExtra.Produtos.IndexModel
+@{
+    ViewData["Title"] = "Estoque de Produtos";
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+<p>
+    <a asp-page="./Criar" class="btn btn-primary">Adicionar Novo Produto</a>
+    <a asp-page="/RendaExtra/Index" class="btn btn-secondary">Voltar ao Painel</a>
+</p>
+
+@if (Model.Produtos.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+				<th>Código</th>
+                <th>Nome</th>
+                <th>Estoque</th>
+                <th>Preço de Venda</th>
+                <th>Valor Total (Estoque)</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Produtos)
+            {
+                <tr>
+                    <td>@item.CodigoProduto</td>
+					<td>@item.Nome</td>
+                    <td>@item.QuantidadeEstoque</td>
+                    <td>@item.PrecoVenda.ToString("C")</td>
+                    @{
+                        // Calcula o valor total do estoque para este item
+                        var valorTotal = item.QuantidadeEstoque * item.PrecoVenda;
+                    }
+                    <td>@valorTotal.ToString("C")</td>
+                    <td>
+                        <a asp-page="./Editar" asp-route-id="@item.Id" class="btn btn-sm btn-info">Editar</a>
+                        
+					<form method="post" asp-page-handler="Delete" asp-route-id="@item.Id" 
+							asp-antiforgery="true" style="display:inline;" 
+							onsubmit="return confirm('Tem certeza que deseja excluir este produto?');">					
+						 @Html.AntiForgeryToken()
+						<button type="submit" class="btn btn-sm btn-danger">Excluir</button>
+					</form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">
+        Você não tem nenhum produto cadastrado no estoque. Comece adicionando um novo!
+    </div>
+}

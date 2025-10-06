@@ -1,0 +1,165 @@
+@page
+@model RendaExtraModel
+@{
+    ViewData["Title"] = "Renda Extra: " + Model.TipoRendaExtra;
+}
+
+<h1>Controle de Renda Extra (@Model.TipoRendaExtra)</h1>
+<hr />
+
+@if (Model.TipoRendaExtra == "Vendas")
+{
+    <div class="row mb-4">
+        
+        <div class="col-md-4">
+            <div class="card text-white bg-danger mb-3">
+                <div class="card-header">TOTAL A RECEBER (Devedores)</div>
+                <div class="card-body">
+                    <h4 class="card-title">@Model.TotalDevido.ToString("C")</h4>
+                    @{
+                        var vencimento = Model.ProximaParcelaVencimento;
+                        string textoVencimento = (vencimento != null) 
+                            ? vencimento.DataVencimento.ToShortDateString() + " (R$ " + vencimento.ValorParcela.ToString("F2") + ")" 
+                            : "Nenhum";
+                    }
+                    <p class="card-text">Próximo Vencimento: **@textoVencimento**</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">VALOR TOTAL DO ESTOQUE</div>
+                <div class="card-body">
+                    <h4 class="card-title">@Model.ValorTotalEstoque.ToString("C")</h4>
+                    <p class="card-text">@Model.TotalProdutosEmEstoque itens em estoque</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card text-dark bg-light mb-3">
+                <div class="card-header">AÇÕES DE VENDAS</div>
+                <div class="card-body">
+                    <a asp-page="./Vendas/CriarVenda" class="btn btn-success w-100 mb-2">Registrar Nova Venda</a>
+                    <a asp-page="./Produtos/Criar" class="btn btn-info w-100 mb-2">Adicionar Novo Produto (Estoque)</a>
+                    <a asp-page="./Vendas/DevedoresIndex" class="btn btn-warning w-100">Gerenciar Devedores / Pagamentos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="mt-4">Estoque (Itens Recentes)</h3>
+    @if (Model.Produtos.Any())
+    {
+        <table class="table table-sm table-striped">
+            <thead>
+                <tr>
+                    <th>Código</th>
+					<th>Produto</th>
+                    <th>Estoque</th>
+                    <th>Preço Venda</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Produtos)
+                {
+                    <tr>
+                        <td>@item.CodigoProduto</td>
+						<td>@item.Nome</td>
+                        <td>@item.QuantidadeEstoque</td>
+                        <td>@item.PrecoVenda.ToString("C")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <a asp-page="./Produtos/Index" class="btn btn-sm btn-secondary">Ver Estoque Completo...</a>
+    }
+    else
+    {
+        <div class="alert alert-info">Nenhum produto cadastrado no estoque.</div>
+    }
+
+    <hr class="mt-4" />
+
+    <h3>Devedores e Saldo (Resumo)</h3>
+    @if (Model.DevedoresResumo.Any())
+    {
+        <table class="table table-sm table-striped">
+            <thead>
+                <tr>
+                    <th>Comprador</th>
+                    <th>Saldo Devido</th>
+                    <th>Status</th>
+                    <th>Prox. Vencimento</th> <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var venda in Model.DevedoresResumo)
+                {
+                    <tr>
+                        <td>@venda.NomeComprador</td>
+                        <td class="text-danger">@venda.SaldoDevedor.ToString("C")</td>
+                        <td>@venda.StatusVenda</td>
+                        <td>@(venda.ProximoVencimento?.ToShortDateString() ?? "-")</td>
+                        <td>
+                            <a asp-page="./Vendas/GerenciarParcelas" asp-route-id="@venda.Id" class="btn btn-sm btn-primary">Pagar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <a asp-page="./Vendas/DevedoresIndex" class="btn btn-sm btn-secondary">Ver Devedores Detalhados...</a>
+    }
+    else
+    {
+        <div class="alert alert-success">Nenhum cliente com dívidas pendentes.</div>
+    }
+}
+else if (Model.TipoRendaExtra == "Uber")
+{
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card text-white bg-info mb-3">
+                <div class="card-header">Ganhos no Mês Atual</div>
+                <div class="card-body">
+                    <h4 class="card-title">@Model.TotalGanhosUberMes.ToString("C")</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <a href="#" class="btn btn-primary mt-3">Registrar Ganho de Hoje</a>
+        </div>
+    </div>
+    
+    <h2>Ganhos Diários (Mês Atual)</h2>
+    
+    @if (Model.GanhosUber.Any())
+    {
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Valor Ganho</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var ganho in Model.GanhosUber)
+                {
+                    <tr>
+                        <td>@ganho.Data.ToShortDateString()</td>
+                        <td class="text-success">@ganho.ValorGanho.ToString("C")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info">Nenhum ganho registrado neste mês.</div>
+    }
+}
+else
+{
+    <div class="alert alert-warning">Você escolheu "Outro" tipo de renda extra. Esta seção não requer um painel especializado.</div>
+}

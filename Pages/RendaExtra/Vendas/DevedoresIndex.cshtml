@@ -1,0 +1,67 @@
+@page
+@model ControleFinanceiroApp.Pages.RendaExtra.Vendas.DevedoresIndexModel
+@{
+    ViewData["Title"] = "Clientes Devedores e Parcelas";
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-danger mb-3">
+            <div class="card-header">Saldo Total a Receber</div>
+            <div class="card-body">
+                <h4 class="card-title">@Model.TotalDevedor.ToString("C")</h4>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-header">Parcelas Atrasadas</div>
+            <div class="card-body">
+                <h4 class="card-title">@Model.ParcelasAtrasadas</h4>
+                <p class="card-text">parcelas vencidas</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p>
+    <a asp-page="./CriarVenda" class="btn btn-success">Registrar Nova Venda a Prazo</a>
+    <a asp-page="/RendaExtra/Index" class="btn btn-secondary">Voltar ao Painel</a>
+</p>
+
+<h2>Devedores em Aberto</h2>
+@if (Model.VendasPendentes.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Comprador</th>
+                <th>Data Venda</th>
+                <th>Valor Total</th>
+                <th>Saldo Devedor</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var venda in Model.VendasPendentes)
+            {
+                <tr>
+                    <td>@venda.NomeComprador</td>
+                    <td>@venda.DataVenda.ToShortDateString()</td>
+                    <td>@venda.ValorTotal.ToString("C")</td>
+                    <td>@venda.SaldoDevedor.ToString("C")</td>
+                    <td>
+                        <a asp-page="./GerenciarParcelas" asp-route-id="@venda.Id" class="btn btn-sm btn-primary">Ver Parcelas</a> 
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-success">Parabéns! Nenhuma venda a prazo pendente.</div>
+}

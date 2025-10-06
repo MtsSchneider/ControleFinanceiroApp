@@ -1,0 +1,18 @@
+@page
+@model ControleFinanceiroApp.Pages.Account.LogoutModel
+@{
+    ViewData["Title"] = "Sair";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <h2>Confirmação de Saída</h2>
+        <hr />
+        <p>Tem certeza que deseja encerrar sua sessão e voltar para a tela de login?</p>
+        
+        <form method="post">
+            <button type="submit" class="btn btn-danger">Sim, Encerrar Sessão</button>
+            <a asp-page="/Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>

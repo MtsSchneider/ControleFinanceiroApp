@@ -1,0 +1,47 @@
+@page
+@model ControleFinanceiroApp.Pages.RendaExtra.Vendas.CriarVendaModel
+@{
+    ViewData["Title"] = "Registrar Nova Venda a Prazo";
+}
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Input.NomeComprador" class="form-label"></label>
+                <input asp-for="Input.NomeComprador" class="form-control" />
+                <span asp-validation-for="Input.NomeComprador" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Input.ValorTotal" class="form-label"></label>
+                <input asp-for="Input.ValorTotal" class="form-control" type="number" step="0.01" />
+                <span asp-validation-for="Input.ValorTotal" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Input.NumeroParcelas" class="form-label"></label>
+                <input asp-for="Input.NumeroParcelas" class="form-control" type="number" min="1" />
+                <span asp-validation-for="Input.NumeroParcelas" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Input.DataPrimeiraParcela" class="form-label"></label>
+                <input asp-for="Input.DataPrimeiraParcela" class="form-control" type="date" />
+                <span asp-validation-for="Input.DataPrimeiraParcela" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-success">Registrar Venda e Parcelas</button>
+            <a asp-page="./DevedoresIndex" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

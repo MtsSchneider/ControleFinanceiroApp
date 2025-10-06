@@ -1,0 +1,67 @@
+@page
+@model ControleFinanceiroApp.Pages.RendaExtra.Vendas.GerenciarParcelasModel
+@{
+    ViewData["Title"] = $"Parcelas de {Model.Venda.NomeComprador}";
+}
+
+<h1>Gerenciar Parcelas</h1>
+<h2>Cliente: @Model.Venda.NomeComprador</h2>
+<hr />
+
+<div class="alert alert-primary">
+    <strong>Venda Total:</strong> @Model.Venda.ValorTotal.ToString("C") | 
+    <strong>Saldo Devedor:</strong> <span class="text-danger">@Model.Venda.SaldoDevedor.ToString("C")</span> |
+    <strong>Status da Venda:</strong> @Model.Venda.StatusVenda
+</div>
+
+<p>
+    <a asp-page="./DevedoresIndex" class="btn btn-secondary">Voltar para Devedores</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Parcela</th>
+            <th>Valor</th>
+            <th>Vencimento</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var parcela in Model.Parcelas)
+        {
+            // Lógica para determinar a cor da linha
+            var rowClass = "";
+            if (parcela.Status == "Paga") 
+            {
+                rowClass = "table-success";
+            }
+            else if (parcela.DataVencimento < DateTime.Today && parcela.Status == "Aberta") 
+            {
+                rowClass = "table-danger"; // Atrasada
+            }
+
+            <tr class="@rowClass">
+                <td>@parcela.NumeroParcela / @Model.Venda.NumeroParcelas</td>
+                <td>@parcela.ValorParcela.ToString("C")</td>
+                <td>@parcela.DataVencimento.ToShortDateString()</td>
+                <td>@parcela.Status</td>
+                <td>
+                    @if (parcela.Status == "Aberta")
+                    {
+                        <form method="post" asp-page-handler="Pagar" asp-route-parcelaId="@parcela.Id" 
+                              asp-antiforgery="true" style="display:inline;"
+                              onsubmit="return confirm('Registrar pagamento de @parcela.ValorParcela.ToString("C")?');">
+                            <button type="submit" class="btn btn-sm btn-success">Registrar Pagamento</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span class="text-success">Pago em @parcela.DataPagamento?.ToShortDateString()</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

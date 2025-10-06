@@ -1,0 +1,49 @@
+@page
+@model ControleFinanceiroApp.Pages.RendaExtra.Produtos.CriarProdutoModel
+@{
+    ViewData["Title"] = "Adicionar Produto ao Estoque";
+}
+
+@using ControleFinanceiroApp.Pages.RendaExtra.Produtos 
+
+<h1>@ViewData["Title"]</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Nome" class="form-label"></label>
+                <input asp-for="Input.Nome" class="form-control" />
+                <span asp-validation-for="Input.Nome" class="text-danger"></span>
+            </div>
+			
+			<div class="mb-3">
+				<label asp-for="Input.CodigoProduto" class="form-label"></label>
+				<input asp-for="Input.CodigoProduto" class="form-control" />
+				<span asp-validation-for="Input.CodigoProduto" class="text-danger"></span>
+			</div>
+            
+            <div class="mb-3">
+                <label asp-for="Input.QuantidadeEstoque" class="form-label"></label>
+                <input asp-for="Input.QuantidadeEstoque" class="form-control" type="number" />
+                <span asp-validation-for="Input.QuantidadeEstoque" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Input.PrecoVenda" class="form-label"></label>
+                <input asp-for="Input.PrecoVenda" class="form-control" type="number" step="0.01" />
+                <span asp-validation-for="Input.PrecoVenda" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Salvar Produto</button>
+            <a asp-page="./Index" class="btn btn-secondary">Voltar ao Estoque</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

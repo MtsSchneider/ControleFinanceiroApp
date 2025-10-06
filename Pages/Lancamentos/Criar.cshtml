@@ -1,0 +1,61 @@
+@page
+@model CriarModel
+@{
+    ViewData["Title"] = "Novo Lançamento";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h2>@ViewData["Title"]</h2>
+        <hr />
+
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <form method="post">
+            
+            <div class="mb-3">
+                <label asp-for="Input.Tipo" class="form-label">Tipo</label>
+                <select asp-for="Input.Tipo" class="form-select">
+                    <option value="">Selecione...</option>
+                    <option value="Receita">Receita (Entrada)</option>
+                    <option value="Despesa">Despesa (Saída)</option>
+                </select>
+                <span asp-validation-for="Input.Tipo" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Input.Descricao" class="form-label"></label>
+                <input asp-for="Input.Descricao" class="form-control" />
+                <span asp-validation-for="Input.Descricao" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Input.Valor" class="form-label"></label>
+                <input asp-for="Input.Valor" class="form-control" type="number" step="0.01" />
+                <span asp-validation-for="Input.Valor" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Input.DataVencimento" class="form-label"></label>
+                <input asp-for="Input.DataVencimento" class="form-control" type="date" />
+                <span asp-validation-for="Input.DataVencimento" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Status" class="form-label">Status</label>
+                <select asp-for="Input.Status" class="form-select">
+                    <option value="Pendente">Pendente</option>
+                    <option value="Pago">Pago/Recebido</option>
+                </select>
+                <span asp-validation-for="Input.Status" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Salvar Lançamento</button>
+            <a asp-page="/Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

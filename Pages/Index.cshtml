@@ -1,0 +1,79 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Dashboard Financeiro";
+}
+
+<h1 class="display-4">Bem-vindo(a) ao seu Controle Financeiro!</h1>
+
+<hr />
+
+<div class="row mb-4">
+    
+    <div class="col-md-4">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-header">Saldo Atual (Lançamentos Pagos)</div>
+            <div class="card-body">
+                <h4 class="card-title">@Model.SaldoAtual.ToString("C")</h4>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-header">Saldo Futuro (Total de Receitas - Total de Despesas)</div>
+            <div class="card-body">
+                <h4 class="card-title">@Model.SaldoPrevisto.ToString("C")</h4>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-header">Contas a Vencer (30 dias)</div>
+            <div class="card-body">
+                @{
+                    var totalDebitos = Model.DebitosProximos.Sum(d => d.Valor);
+                }
+                <h4 class="card-title">@totalDebitos.ToString("C")</h4>
+                <p class="card-text">@Model.DebitosProximos.Count débitos pendentes</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<hr />
+
+<h2>Débitos Pendentes Próximos a Vencer</h2>
+
+@if (Model.DebitosProximos.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Descrição</th>
+                <th>Valor</th>
+                <th>Vencimento</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var debito in Model.DebitosProximos)
+            {
+                <tr>
+                    <td>@debito.Descricao</td>
+                    <td class="text-danger">@debito.Valor.ToString("C")</td>
+                    <td>@debito.DataVencimento.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-success">
+        Parabéns! Nenhuma conta pendente foi encontrada para os próximos 30 dias.
+    </div>
+}
+
+<a asp-page="/Lancamentos/Criar" class="btn btn-success mt-3">Adicionar Novo Lançamento</a>

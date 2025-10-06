@@ -1,0 +1,61 @@
+@page
+@model EditarModel
+@{
+    ViewData["Title"] = "Editar Lançamento";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h2>@ViewData["Title"]</h2>
+        <hr />
+
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        <form method="post">
+            <input type="hidden" asp-for="Lancamento.Id" />
+            
+            <div class="mb-3">
+                <label asp-for="Lancamento.Tipo" class="form-label">Tipo</label>
+                <select asp-for="Lancamento.Tipo" class="form-select">
+                    <option value="Receita">Receita (Entrada)</option>
+                    <option value="Despesa">Despesa (Saída)</option>
+                </select>
+                <span asp-validation-for="Lancamento.Tipo" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Lancamento.Descricao" class="form-label"></label>
+                <input asp-for="Lancamento.Descricao" class="form-control" />
+                <span asp-validation-for="Lancamento.Descricao" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Lancamento.Valor" class="form-label"></label>
+                <input asp-for="Lancamento.Valor" class="form-control" type="number" step="0.01" />
+                <span asp-validation-for="Lancamento.Valor" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Lancamento.DataVencimento" class="form-label"></label>
+                <input asp-for="Lancamento.DataVencimento" class="form-control" type="date" value="@Model.Lancamento.DataVencimento.ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="Lancamento.DataVencimento" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Lancamento.Status" class="form-label">Status</label>
+                <select asp-for="Lancamento.Status" class="form-select">
+                    <option value="Pendente">Pendente</option>
+                    <option value="Pago">Pago/Recebido</option>
+                </select>
+                <span asp-validation-for="Lancamento.Status" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            <a asp-page="./Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

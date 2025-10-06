@@ -1,0 +1,49 @@
+@page
+@model ControleFinanceiroApp.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="row">
+    <div class="col-md-4 offset-md-4">
+        <h2>@ViewData["Title"]</h2>
+        <hr />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <form method="post">
+            
+            <div class="mb-3">
+                <label asp-for="Input.Email" class="form-label"></label>
+                <input asp-for="Input.Email" class="form-control" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-3">
+                <label asp-for="Input.Senha" class="form-label"></label>
+                <input asp-for="Input.Senha" class="form-control" />
+                <span asp-validation-for="Input.Senha" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input asp-for="Input.RememberMe" type="checkbox" class="form-check-input" />
+                <label asp-for="Input.RememberMe" class="form-check-label"></label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Entrar</button>
+
+            <div class="mt-3 text-center">
+                <p>
+                    <a asp-page="./Register">Criar uma nova conta</a>
+                </p>
+                <p>
+                    <a href="#">Esqueci minha senha</a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
