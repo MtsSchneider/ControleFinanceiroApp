@@ -20,7 +20,7 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
             _context = context;
         }
 
-        public IList<Venda> VendasPendentes { get; set; } = new List<Venda>();
+        public IList<VendaDevedorViewModel> VendasPendentes { get; set; } = new List<VendaDevedorViewModel>();
         public decimal TotalDevedor { get; set; } = 0;
         public int ParcelasAtrasadas { get; set; } = 0;
 
@@ -30,19 +30,40 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
             if (string.IsNullOrEmpty(userIdString)) return;
             _userId = int.Parse(userIdString);
 
-            VendasPendentes = await _context.Vendas
+            var vendasBase = await _context.Vendas
                 .Where(v => v.UsuarioId == _userId && v.StatusVenda != "Pago")
                 .OrderByDescending(v => v.DataVenda)
                 .ToListAsync();
 
-            TotalDevedor = VendasPendentes.Sum(v => v.SaldoDevedor);
+            var listaDevedores = new List<VendaDevedorViewModel>();
 
-            ParcelasAtrasadas = await _context.Parcelas
-                .Include(p => p.Venda)
-                .Where(p => p.Venda!.UsuarioId == _userId &&
-                            p.Status == "Aberta" &&
-                            p.DataVencimento < DateTime.Today)
-                .CountAsync();
+            foreach (var venda in vendasBase)
+            {
+                // Encontra a próxima parcela aberta
+                var proximaParcela = await _context.Parcelas
+                    .Where(p => p.VendaId == venda.Id && p.Status == "Aberta")
+                    .OrderBy(p => p.DataVencimento)
+                    .FirstOrDefaultAsync();
+
+                // Mapeia para a ViewModel
+                listaDevedores.Add(new VendaDevedorViewModel
+                {
+                    // Mapeie todos os campos da Venda base, mais o novo campo:
+                    Id = venda.Id,
+                    NomeComprador = venda.NomeComprador,
+                    ValorTotal = venda.ValorTotal,
+                    SaldoDevedor = venda.SaldoDevedor,
+                    StatusVenda = venda.StatusVenda,
+                    DataVenda = venda.DataVenda,
+                    NumeroParcelas = venda.NumeroParcelas,
+
+                    // NOVO CAMPO:
+                    ProximoVencimento = proximaParcela?.DataVencimento
+                });
+            }
+
+            VendasPendentes = listaDevedores;
+
         }
 
         public async Task<IActionResult> OnPostDeleteVendaAsync(int id)
@@ -62,6 +83,11 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
             await _context.SaveChangesAsync();
 
             return RedirectToPage();
+        }
+
+        public class VendaDevedorViewModel : Venda
+        {
+            public DateTime? ProximoVencimento { get; set; }
         }
     }
 }
