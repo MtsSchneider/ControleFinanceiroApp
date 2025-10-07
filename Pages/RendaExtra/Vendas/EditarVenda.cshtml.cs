@@ -66,7 +66,8 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
             Input.NumeroParcelas = venda.NumeroParcelas;
 
             // 2. Verifica se pode editar valores/parcelas
-            PodeEditarValores = !venda.Parcelas.Any(p => p.Status == "Paga");
+            PodeEditarValores = !(venda.Parcelas ?? new List<Parcela>())
+                .Any(p => p.Status == "Paga");
 
             return Page();
         }
@@ -85,7 +86,8 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
             if (vendaToUpdate == null) return NotFound();
 
             // Seta o flag de edição para renderizar corretamente a página em caso de erro
-            PodeEditarValores = !vendaToUpdate.Parcelas.Any(p => p.Status == "Paga");
+            PodeEditarValores = !(venda.Parcelas ?? new List<Parcela>())
+                .Any(p => p.Status == "Paga");
             VendaOriginal = vendaToUpdate;
 
             if (!ModelState.IsValid)
@@ -122,7 +124,7 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
                         {
                             VendaId = vendaToUpdate.Id,
                             NumeroParcela = i,
-                            Valor = valorParcela,
+                            ValorParcela = valorParcela,
                             DataVencimento = dataParcela,
                             Status = "Aberta"
                         });
