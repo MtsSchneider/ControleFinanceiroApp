@@ -70,6 +70,7 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
             return Page();
         }
 
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPostAsync()
         {
             var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
