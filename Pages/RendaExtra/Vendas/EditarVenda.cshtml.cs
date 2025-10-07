@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using System.Collections.Generic;
 
 namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
 {
@@ -21,7 +22,6 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
         [BindProperty]
         public Venda VendaOriginal { get; set; } = default!;
 
-        // Flag para habilitar ou desabilitar campos no formulário
         public bool PodeEditarValores { get; set; }
 
         public class InputModel
@@ -53,7 +53,6 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
             if (string.IsNullOrEmpty(userIdString)) return RedirectToPage("/Account/Login");
             _userId = int.Parse(userIdString);
 
-            // 1. Busca a venda e as parcelas
             var venda = await _context.Vendas
                 .Include(v => v.Parcelas)
                 .FirstOrDefaultAsync(v => v.Id == id && v.UsuarioId == _userId);
@@ -65,7 +64,6 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
             Input.ValorTotal = venda.ValorTotal;
             Input.NumeroParcelas = venda.NumeroParcelas;
 
-            // 2. Verifica se pode editar valores/parcelas
             PodeEditarValores = !(venda.Parcelas ?? new List<Parcela>())
                 .Any(p => p.Status == "Paga");
 
@@ -78,16 +76,13 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
             if (string.IsNullOrEmpty(userIdString)) return RedirectToPage("/Account/Login");
             _userId = int.Parse(userIdString);
 
-            // 1. Re-busca a venda completa
             var vendaToUpdate = await _context.Vendas
                 .Include(v => v.Parcelas)
                 .FirstOrDefaultAsync(v => v.Id == VendaOriginal.Id && v.UsuarioId == _userId);
 
             if (vendaToUpdate == null) return NotFound();
 
-            // Seta o flag de edição para renderizar corretamente a página em caso de erro
-            PodeEditarValores = !(venda.Parcelas ?? new List<Parcela>())
-                .Any(p => p.Status == "Paga");
+            PodeEditarValores = !(vendaToUpdate.Parcelas ?? new List<Parcela>()).Any(p => p.Status == "Paga");
             VendaOriginal = vendaToUpdate;
 
             if (!ModelState.IsValid)
@@ -95,44 +90,36 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
                 return Page();
             }
 
-            // 2. Aplica as alterações no Nome
             vendaToUpdate.NomeComprador = Input.NomeComprador;
 
-            // 3. Verifica e aplica alterações em Valor/Parcelas (SÓ SE NADA FOI PAGO)
             if (PodeEditarValores)
             {
-                // Se o Valor ou as Parcelas mudaram
                 if (vendaToUpdate.ValorTotal != Input.ValorTotal || vendaToUpdate.NumeroParcelas != Input.NumeroParcelas)
                 {
-                    // A. Remove todas as parcelas existentes (já que nenhuma foi paga)
-                    _context.Parcelas.RemoveRange(vendaToUpdate.Parcelas);
+                    _context.Parcelas.RemoveRange(vendaToUpdate.Parcelas!);
 
-                    // B. Atualiza os novos valores
                     vendaToUpdate.ValorTotal = Input.ValorTotal;
                     vendaToUpdate.NumeroParcelas = Input.NumeroParcelas;
-                    vendaToUpdate.SaldoDevedor = Input.ValorTotal; // Reseta o saldo
+                    vendaToUpdate.SaldoDevedor = Input.ValorTotal;
 
-                    // C. Recria as parcelas com base nos novos valores
-                    var valorParcela = vendaToUpdate.ValorTotal / vendaToUpdate.NumeroParcelas;
-                    var dataParcela = vendaToUpdate.DataVenda;
+                    decimal valorParcela = vendaToUpdate.ValorTotal / vendaToUpdate.NumeroParcelas;
+                    DateTime dataInicial = vendaToUpdate.DataVenda;
 
                     for (int i = 1; i <= vendaToUpdate.NumeroParcelas; i++)
                     {
-                        dataParcela = dataParcela.AddMonths(1);
+                        DateTime dataVencimento = dataInicial.AddMonths(i);
 
                         vendaToUpdate.Parcelas.Add(new Parcela
                         {
-                            VendaId = vendaToUpdate.Id,
                             NumeroParcela = i,
-                            ValorParcela = valorParcela,
-                            DataVencimento = dataParcela,
+                            ValorParcela = Math.Round(valorParcela, 2),
+                            DataVencimento = dataVencimento,
                             Status = "Aberta"
                         });
                     }
                 }
             }
 
-            // 4. Salva todas as alterações (venda e parcelas)
             await _context.SaveChangesAsync();
 
             return RedirectToPage("./DevedoresIndex");
