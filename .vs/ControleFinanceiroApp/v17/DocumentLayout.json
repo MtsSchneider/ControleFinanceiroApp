@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\mtsga\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{F93C4DF1-5155-5498-446F-DE4DE84715F2}|ControleFinanceiroApp.csproj|c:\\users\\mtsga\\source\\repos\\mtsschneider\\controlefinanceiroapp\\pages\\rendaextra\\vendas\\devedoresindex.cshtml||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{F93C4DF1-5155-5498-446F-DE4DE84715F2}|ControleFinanceiroApp.csproj|solutionrelative:pages\\rendaextra\\vendas\\devedoresindex.cshtml||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{F93C4DF1-5155-5498-446F-DE4DE84715F2}|ControleFinanceiroApp.csproj|c:\\users\\mtsga\\source\\repos\\mtsschneider\\controlefinanceiroapp\\pages\\rendaextra\\vendas\\criarvenda.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{F93C4DF1-5155-5498-446F-DE4DE84715F2}|ControleFinanceiroApp.csproj|solutionrelative:pages\\rendaextra\\vendas\\criarvenda.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F93C4DF1-5155-5498-446F-DE4DE84715F2}|ControleFinanceiroApp.csproj|c:\\users\\mtsga\\source\\repos\\mtsschneider\\controlefinanceiroapp\\pages\\rendaextra\\vendas\\criarvenda.cshtml||{8B382828-6202-11D1-8870-0000F87579D2}",
       "RelativeMoniker": "D:0:0:{F93C4DF1-5155-5498-446F-DE4DE84715F2}|ControleFinanceiroApp.csproj|solutionrelative:pages\\rendaextra\\vendas\\criarvenda.cshtml||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F93C4DF1-5155-5498-446F-DE4DE84715F2}|ControleFinanceiroApp.csproj|c:\\users\\mtsga\\source\\repos\\mtsschneider\\controlefinanceiroapp\\pages\\rendaextra\\vendas\\devedoresindex.cshtml||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{F93C4DF1-5155-5498-446F-DE4DE84715F2}|ControleFinanceiroApp.csproj|solutionrelative:pages\\rendaextra\\vendas\\devedoresindex.cshtml||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F93C4DF1-5155-5498-446F-DE4DE84715F2}|ControleFinanceiroApp.csproj|c:\\users\\mtsga\\source\\repos\\mtsschneider\\controlefinanceiroapp\\pages\\rendaextra\\vendas\\devedoresindex.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -26,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Bookmark",
@@ -34,7 +34,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "CriarVenda.cshtml",
               "DocumentMoniker": "C:\\Users\\mtsga\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\Pages\\RendaExtra\\Vendas\\CriarVenda.cshtml",
               "RelativeDocumentMoniker": "Pages\\RendaExtra\\Vendas\\CriarVenda.cshtml",
@@ -47,7 +47,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "CriarVenda.cshtml.cs",
               "DocumentMoniker": "C:\\Users\\mtsga\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\Pages\\RendaExtra\\Vendas\\CriarVenda.cshtml.cs",
               "RelativeDocumentMoniker": "Pages\\RendaExtra\\Vendas\\CriarVenda.cshtml.cs",
@@ -60,13 +60,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "DevedoresIndex.cshtml",
               "DocumentMoniker": "C:\\Users\\mtsga\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\Pages\\RendaExtra\\Vendas\\DevedoresIndex.cshtml",
               "RelativeDocumentMoniker": "Pages\\RendaExtra\\Vendas\\DevedoresIndex.cshtml",
               "ToolTip": "C:\\Users\\mtsga\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\Pages\\RendaExtra\\Vendas\\DevedoresIndex.cshtml",
               "RelativeToolTip": "Pages\\RendaExtra\\Vendas\\DevedoresIndex.cshtml",
-              "ViewState": "AgIAACEAAAAAAAAAAAAAADYAAABTAAAAAAAAAA==",
+              "ViewState": "AgIAACEAAAAAAAAAAAAAAD8AAAAZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
               "WhenOpened": "2025-10-07T00:47:04.348Z",
               "EditorCaption": ""
