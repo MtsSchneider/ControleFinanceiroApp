@@ -6,6 +6,7 @@ using ControleFinanceiroApp.Models;
 using System.Security.Claims;
 using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
 {
@@ -13,7 +14,7 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
     public class CriarVendaModel : PageModel
     {
         private readonly AppDbContext _context;
-        private int _userId = 0; 
+        private int _userId = 0;
 
         public CriarVendaModel(AppDbContext context)
         {
@@ -22,6 +23,7 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
 
         [BindProperty]
         public VendaInputModel Input { get; set; } = new VendaInputModel();
+
         public class VendaInputModel
         {
             [Required(ErrorMessage = "O nome do comprador é obrigatório.")]
@@ -39,11 +41,15 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
             [Range(1, 48, ErrorMessage = "A venda deve ter no mínimo 1 parcela.")]
             [Display(Name = "Número de Parcelas")]
             public int NumeroParcelas { get; set; }
-            
+
             [Required(ErrorMessage = "A data da primeira parcela é obrigatória.")]
             [DataType(DataType.Date)]
             [Display(Name = "Data da 1ª Parcela")]
             public DateTime DataPrimeiraParcela { get; set; }
+
+            [DataType(DataType.Currency)]
+            [Display(Name = "Valor 1ª Parcela (Opcional)")]
+            public decimal? ValorPrimeiraParcela { get; set; }
         }
 
         public void OnGet()
@@ -69,30 +75,91 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
                 DataVenda = DateTime.Today,
                 ValorTotal = Input.ValorTotal,
                 NumeroParcelas = Input.NumeroParcelas,
-                SaldoDevedor = Input.ValorTotal, 
-                StatusVenda = "Pendente" 
+                SaldoDevedor = Input.ValorTotal,
+                StatusVenda = "Pendente"
             };
-            
-            var parcelas = new List<Parcela>();
-            decimal valorParcela = Math.Round(Input.ValorTotal / Input.NumeroParcelas, 2);
-            DateTime dataVencimento = Input.DataPrimeiraParcela;
-            
-            for (int i = 1; i <= Input.NumeroParcelas; i++)
+
+            // =========================================================
+            // LÓGICA DE CRIAÇÃO DE PARCELAS VARIÁVEIS
+            // =========================================================
+
+            decimal valorPrimeiraParcela;
+            decimal valorRestante = Input.ValorTotal;
+            int parcelasRestantes = Input.NumeroParcelas;
+
+            if (Input.ValorPrimeiraParcela.HasValue && Input.ValorPrimeiraParcela.Value > 0)
             {
-                parcelas.Add(new Parcela
+                if (Input.ValorPrimeiraParcela.Value >= Input.ValorTotal)
                 {
+                    valorPrimeiraParcela = Input.ValorTotal;
+                    valorRestante = 0;
+                    parcelasRestantes = 0;
+                    novaVenda.NumeroParcelas = 1;
+
+                    if (Input.NumeroParcelas > 1)
+                    {
+                        ModelState.AddModelError(nameof(Input.ValorPrimeiraParcela), "O valor da primeira parcela é igual ou maior que o total. A venda será de 1 parcela.");
+                    }
+                }
+                else
+                {
+                    valorPrimeiraParcela = Input.ValorPrimeiraParcela.Value;
+                    valorRestante -= valorPrimeiraParcela;
+                    parcelasRestantes = Input.NumeroParcelas - 1;
+                }
+            }
+            else
+            {
+                valorPrimeiraParcela = Input.ValorTotal / Input.NumeroParcelas;
+                valorRestante = Input.ValorTotal - valorPrimeiraParcela;
+                parcelasRestantes = Input.NumeroParcelas - 1;
+            }
+
+            
+            decimal valorParcelasIguais = 0;
+            if (parcelasRestantes > 0)
+            {
+                valorParcelasIguais = valorRestante / parcelasRestantes;
+            }
+
+            DateTime dataVencimento = Input.DataPrimeiraParcela;
+            var listaParcelas = new List<Parcela>();
+
+            for (int i = 1; i <= novaVenda.NumeroParcelas; i++) 
+            {
+               
+                dataVencimento = Input.DataPrimeiraParcela.AddMonths(i - 1);
+                decimal valorAtual;
+
+                if (i == 1)
+                {
+                    valorAtual = valorPrimeiraParcela;
+                }
+                else
+                {
+                    valorAtual = valorParcelasIguais;
+                }
+
+               
+                valorAtual = Math.Round(valorAtual, 2);
+
+                listaParcelas.Add(new Parcela
+                {
+                    
                     NumeroParcela = i,
-                    ValorParcela = valorParcela,
-                    DataVencimento = dataVencimento.AddMonths(i - 1), 
+                    ValorParcela = valorAtual, 
+                    DataVencimento = dataVencimento,
                     Status = "Aberta"
                 });
             }
-            
-            novaVenda.Parcelas = parcelas;
+
+         
+            novaVenda.Parcelas = listaParcelas;
             _context.Vendas.Add(novaVenda);
+
             await _context.SaveChangesAsync();
 
-            return RedirectToPage("./DevedoresIndex"); 
+            return RedirectToPage("./DevedoresIndex");
         }
     }
 }

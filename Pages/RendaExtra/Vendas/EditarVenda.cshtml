@@ -1,0 +1,66 @@
+﻿@page "{id:int}"
+@model ControleFinanceiroApp.Pages.RendaExtra.Vendas.EditarVendaModel
+@{
+    ViewData["Title"] = "Editar Venda/Dívida";
+}
+
+<div class="container mt-4">
+    <h1>@ViewData["Title"]</h1>
+    <h4>Venda #@Model.VendaOriginal.Id</h4>
+    <p>
+        Use este formulário para corrigir dados cadastrais. 
+        @if (!Model.PodeEditarValores)
+        {
+            <span class="text-danger fw-bold">Não é possível editar o Valor e Parcelas, pois já existem pagamentos registrados.</span>
+        }
+    </p>
+    
+    <hr />
+    
+    <div class="row">
+        <div class="col-md-6">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                
+                <input type="hidden" asp-for="VendaOriginal.Id" /> 
+
+                <div class="mb-3">
+                    <label asp-for="Input.NomeComprador" class="form-label"></label>
+                    <input asp-for="Input.NomeComprador" class="form-control" />
+                    <span asp-validation-for="Input.NomeComprador" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Input.ValorTotal" class="form-label"></label>
+                    <input asp-for="Input.ValorTotal" class="form-control" 
+                           disabled="@(!Model.PodeEditarValores)" />
+                    <span asp-validation-for="Input.ValorTotal" class="text-danger"></span>
+                    @if (!Model.PodeEditarValores)
+                    {
+                        <small class="text-muted">Desabilitado após o primeiro pagamento.</small>
+                    }
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="Input.NumeroParcelas" class="form-label"></label>
+                    <input asp-for="Input.NumeroParcelas" class="form-control" 
+                           disabled="@(!Model.PodeEditarValores)" />
+                    <span asp-validation-for="Input.NumeroParcelas" class="text-danger"></span>
+                    @if (!Model.PodeEditarValores)
+                    {
+                        <small class="text-muted">Desabilitado após o primeiro pagamento.</small>
+                    }
+                </div>
+
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                    <a asp-page="./DevedoresIndex" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
