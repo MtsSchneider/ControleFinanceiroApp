@@ -32,25 +32,23 @@
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Input.ValorTotal" class="form-label"></label>
-                    <input asp-for="Input.ValorTotal" class="form-control" 
-                           disabled="@(!Model.PodeEditarValores)" />
-                    <span asp-validation-for="Input.ValorTotal" class="text-danger"></span>
-                    @if (!Model.PodeEditarValores)
-                    {
-                        <small class="text-muted">Desabilitado após o primeiro pagamento.</small>
-                    }
+                     <label asp-for="Input.ValorTotal" class="form-label"></label>
+                     <input asp-for="Input.ValorTotal" class="form-control" 
+                            readonly="@(!Model.PodeEditarValores)" /> <span asp-validation-for="Input.ValorTotal" class="text-danger"></span>
+                     @if (!Model.PodeEditarValores)
+                     {
+                         <small class="text-muted">Somente leitura após o primeiro pagamento.</small>
+                     }
                 </div>
                 
-                <div class="mb-3">
-                    <label asp-for="Input.NumeroParcelas" class="form-label"></label>
-                    <input asp-for="Input.NumeroParcelas" class="form-control" 
-                           disabled="@(!Model.PodeEditarValores)" />
-                    <span asp-validation-for="Input.NumeroParcelas" class="text-danger"></span>
-                    @if (!Model.PodeEditarValores)
-                    {
-                        <small class="text-muted">Desabilitado após o primeiro pagamento.</small>
-                    }
+               <div class="mb-3">
+                     <label asp-for="Input.NumeroParcelas" class="form-label"></label>
+                     <input asp-for="Input.NumeroParcelas" class="form-control" 
+                            readonly="@(!Model.PodeEditarValores)" /> <span asp-validation-for="Input.NumeroParcelas" class="text-danger"></span>
+                     @if (!Model.PodeEditarValores)
+                     {
+                         <small class="text-muted">Somente leitura após o primeiro pagamento.</small>
+                     }
                 </div>
 
                 <div class="mb-3">
