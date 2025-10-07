@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "cTNngSWlaVk=",
+  "dgSpecHash": "6F3St8S7ubU=",
   "success": true,
-  "projectFilePath": "C:\\Users\\mtsga\\ControleFinanceiro\\ControleFinanceiroApp\\ControleFinanceiroApp.csproj",
+  "projectFilePath": "C:\\Users\\mtsga\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\ControleFinanceiroApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mtsga\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\mtsga\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\7.0.0\\microsoft.bcl.asyncinterfaces.7.0.0.nupkg.sha512",

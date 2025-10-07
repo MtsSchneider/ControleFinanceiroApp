@@ -1,10 +1,10 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\mtsga\\ControleFinanceiro\\ControleFinanceiroApp\\",
+  "WorkspaceRootPath": "C:\\Users\\mtsga\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\mtsga\\ControleFinanceiro\\ControleFinanceiroApp\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{F93C4DF1-5155-5498-446F-DE4DE84715F2}|ControleFinanceiroApp.csproj|c:\\users\\mtsga\\source\\repos\\mtsschneider\\controlefinanceiroapp\\pages\\rendaextra\\vendas\\devedoresindex.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F93C4DF1-5155-5498-446F-DE4DE84715F2}|ControleFinanceiroApp.csproj|solutionrelative:pages\\rendaextra\\vendas\\devedoresindex.cshtml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -23,14 +23,14 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\mtsga\\ControleFinanceiro\\ControleFinanceiroApp\\Program.cs",
-              "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\mtsga\\ControleFinanceiro\\ControleFinanceiroApp\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAEAAAAAAAAAAADwvygAAAAAAAAAAAAAAA==",
+              "Title": "DevedoresIndex.cshtml.cs",
+              "DocumentMoniker": "C:\\Users\\mtsga\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\Pages\\RendaExtra\\Vendas\\DevedoresIndex.cshtml.cs",
+              "RelativeDocumentMoniker": "Pages\\RendaExtra\\Vendas\\DevedoresIndex.cshtml.cs",
+              "ToolTip": "C:\\Users\\mtsga\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\Pages\\RendaExtra\\Vendas\\DevedoresIndex.cshtml.cs",
+              "RelativeToolTip": "Pages\\RendaExtra\\Vendas\\DevedoresIndex.cshtml.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACgAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-04T18:46:13.725Z",
+              "WhenOpened": "2025-10-07T00:20:49.722Z",
               "EditorCaption": ""
             }
           ]

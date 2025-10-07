@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\mtsga\\ControleFinanceiro\\ControleFinanceiroApp\\ControleFinanceiroApp.csproj": {}
+    "C:\\Users\\mtsga\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\ControleFinanceiroApp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\mtsga\\ControleFinanceiro\\ControleFinanceiroApp\\ControleFinanceiroApp.csproj": {
+    "C:\\Users\\mtsga\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\ControleFinanceiroApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\mtsga\\ControleFinanceiro\\ControleFinanceiroApp\\ControleFinanceiroApp.csproj",
+        "projectUniqueName": "C:\\Users\\mtsga\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\ControleFinanceiroApp.csproj",
         "projectName": "ControleFinanceiroApp",
-        "projectPath": "C:\\Users\\mtsga\\ControleFinanceiro\\ControleFinanceiroApp\\ControleFinanceiroApp.csproj",
+        "projectPath": "C:\\Users\\mtsga\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\ControleFinanceiroApp.csproj",
         "packagesPath": "C:\\Users\\mtsga\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\mtsga\\ControleFinanceiro\\ControleFinanceiroApp\\obj\\",
+        "outputPath": "C:\\Users\\mtsga\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
