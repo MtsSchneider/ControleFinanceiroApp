@@ -54,10 +54,13 @@
                     <td>@venda.SaldoDevedor.ToString("C")</td>
                     <td>@(venda.ProximoVencimento?.ToShortDateString() ?? "-")</td>
                     <td>
-                        <form method="post" asp-page-handler="DeleteVenda" asp-route-id="@venda.Id" asp-antiforgery="true" style="display:inline;" onsubmit="return confirm('ATENÇÃO: Deseja realmente CANCELAR esta dívida? Todas as parcelas serão excluídas.');">
-                            <button type="submit" class="btn btn-sm btn-danger">Excluir Dívida</button>
+                         <a asp-page="./EditarVenda" asp-route-id="@venda.Id" class="btn btn-sm btn-info">Editar</a> 
+
+                         <form method="post" asp-page-handler="DeleteVenda" asp-route-id="@venda.Id" asp-antiforgery="true" style="display:inline;" onsubmit="return confirm('ATENÇÃO: Deseja realmente CANCELAR esta dívida? Todas as parcelas serão excluídas.');">
+                             <button type="submit" class="btn btn-sm btn-danger">Excluir Dívida</button>
                          </form>
-                        <a asp-page="./GerenciarParcelas" asp-route-id="@venda.Id" class="btn btn-sm btn-primary">Ver Parcelas</a> 
+                         
+                         <a asp-page="./GerenciarParcelas" asp-route-id="@venda.Id" class="btn btn-sm btn-primary">Ver Parcelas</a> 
                     </td>
                 </tr>
             }
