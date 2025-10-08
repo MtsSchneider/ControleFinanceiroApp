@@ -16,18 +16,17 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
         private readonly AppDbContext _context;
         private int _userId;
 
-        // PROPRIEDADES DE INPUT (SEM O INPUTMODEL)
+        // PROPRIEDADES DE INPUT
         [BindProperty]
         [Required(ErrorMessage = "O nome do comprador é obrigatório.")]
         [Display(Name = "Nome do Comprador")]
         public string? NomeComprador { get; set; }
 
         [BindProperty]
-        [Required(ErrorMessage = "O valor total é obrigatório.")]
         [Range(0.01, double.MaxValue, ErrorMessage = "O valor deve ser positivo.")]
         [DataType(DataType.Currency)]
         [Display(Name = "Valor Total")]
-        public decimal ValorTotal { get; set; }
+        public decimal? ValorTotal { get; set; }
 
         [BindProperty]
         [Required(ErrorMessage = "O número de parcelas é obrigatório.")]
@@ -38,16 +37,15 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
         [BindProperty]
         [Display(Name = "Valor da 1ª Parcela")]
         [Range(0, double.MaxValue, ErrorMessage = "O valor deve ser positivo ou zero.")]
-        public decimal ValorPrimeiraParcela { get; set; } = 0;
+        public decimal? ValorPrimeiraParcela { get; set; }
 
-        // CAMPOS OCULTOS PARA BINDING DIRETO DO POST (RESOLVE O PROBLEMA DE DATA)
+        // CAMPOS OCULTOS
         [BindProperty]
-        public int VendaId { get; set; } // NOVO: ID da Venda
+        public int VendaId { get; set; }
 
         [BindProperty]
-        public DateTime DataVendaOriginal { get; set; } // NOVO: Data para recálculo
+        public DateTime DataVendaOriginal { get; set; }
 
-        // MANTIDO: VendaOriginal para exibição e validação
         public Venda VendaOriginal { get; set; } = default!;
 
         public bool PodeEditarValores { get; set; }
@@ -69,14 +67,12 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
 
             if (venda == null) return NotFound();
 
-            // POPULAÇÃO DOS CAMPOS DE INPUT NA REQUISIÇÃO GET
             VendaOriginal = venda;
             NomeComprador = venda.NomeComprador;
             ValorTotal = venda.ValorTotal;
             NumeroParcelas = venda.NumeroParcelas;
-            ValorPrimeiraParcela = venda.Parcelas?.FirstOrDefault(p => p.NumeroParcela == 1)?.ValorParcela ?? 0;
+            ValorPrimeiraParcela = venda.Parcelas?.FirstOrDefault(p => p.NumeroParcela == 1)?.ValorParcela ?? 0m;
 
-            // POPULAÇÃO DOS CAMPOS OCULTOS
             VendaId = venda.Id;
             DataVendaOriginal = venda.DataVenda;
 
@@ -92,16 +88,25 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
             if (string.IsNullOrEmpty(userIdString)) return RedirectToPage("/Account/Login");
             _userId = int.Parse(userIdString);
 
-            // 1. Re-busca a venda completa (usando VendaId)
+            // 1. Re-busca a venda completa
             var vendaToUpdate = await _context.Vendas
                 .Include(v => v.Parcelas)
-                .FirstOrDefaultAsync(v => v.Id == VendaId && v.UsuarioId == _userId); // Usa VendaId
+                .FirstOrDefaultAsync(v => v.Id == VendaId && v.UsuarioId == _userId);
 
             if (vendaToUpdate == null) return NotFound();
 
-            // Re-calcula flags para fallback (necessário para o Page() em caso de erro)
+            // Seta o flag/original para renderizar corretamente a página em caso de erro
             PodeEditarValores = !(vendaToUpdate.Parcelas ?? new List<Parcela>()).Any(p => p.Status == "Paga");
             VendaOriginal = vendaToUpdate;
+
+            // --- Lógica de Fallback de Valores Nulos ---
+            decimal novoValorTotal = ValorTotal ?? vendaToUpdate.ValorTotal;
+            int novoNumeroParcelas = NumeroParcelas;
+            decimal valorDaPrimeira = ValorPrimeiraParcela ?? 0m;
+
+            ValorTotal = novoValorTotal;
+            NumeroParcelas = novoNumeroParcelas;
+            // ------------------------------------------
 
             if (!ModelState.IsValid)
             {
@@ -110,7 +115,7 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
 
             try
             {
-                if (ValorPrimeiraParcela > ValorTotal)
+                if (valorDaPrimeira > novoValorTotal)
                 {
                     ModelState.AddModelError(nameof(ValorPrimeiraParcela), "O valor da primeira parcela não pode ser maior que o Valor Total.");
                     return Page();
@@ -119,65 +124,63 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
                 // 2. Aplica as alterações no Nome
                 vendaToUpdate.NomeComprador = NomeComprador;
 
-                // 3. Recálculo (A DataVendaOriginal já está vinculada no POST)
-                if (PodeEditarValores)
+                // 3. LOGICA DE FORÇA DE RECÁLCULO
+                bool firstInstallmentChanged = valorDaPrimeira != (vendaToUpdate.Parcelas?.FirstOrDefault(p => p.NumeroParcela == 1)?.ValorParcela ?? 0m);
+
+                // Recalcula se (VALOR/NUMERO MUDOU) OU SE (SÓ A 1ª PARCELA MUDOU)
+                if (PodeEditarValores &&
+                    (vendaToUpdate.ValorTotal != novoValorTotal ||
+                     vendaToUpdate.NumeroParcelas != novoNumeroParcelas ||
+                     firstInstallmentChanged)) // NOVO GATILHO
                 {
-                    if (vendaToUpdate.ValorTotal != ValorTotal || vendaToUpdate.NumeroParcelas != NumeroParcelas)
+                    // A. Remove e atualiza os valores
+                    _context.Parcelas.RemoveRange(vendaToUpdate.Parcelas!);
+                    vendaToUpdate.ValorTotal = novoValorTotal;
+                    vendaToUpdate.NumeroParcelas = novoNumeroParcelas;
+                    vendaToUpdate.SaldoDevedor = novoValorTotal;
+
+                    // B. LÓGICA DE RECRIAÇÃO
+                    if (valorDaPrimeira == 0m)
                     {
-                        // Remove e atualiza os valores
-                        _context.Parcelas.RemoveRange(vendaToUpdate.Parcelas!);
-                        vendaToUpdate.ValorTotal = ValorTotal;
-                        vendaToUpdate.NumeroParcelas = NumeroParcelas;
-                        vendaToUpdate.SaldoDevedor = ValorTotal;
+                        valorDaPrimeira = novoValorTotal / novoNumeroParcelas;
+                    }
 
-                        // Lógica de Recriação
-                        decimal valorDaPrimeira = ValorPrimeiraParcela;
+                    decimal valorRestante = novoValorTotal - valorDaPrimeira;
+                    int parcelasRestantes = novoNumeroParcelas - 1;
+                    decimal valorParcelasIguais = 0m;
 
-                        if (valorDaPrimeira == 0 && NumeroParcelas > 0)
+                    if (parcelasRestantes > 0)
+                    {
+                        valorParcelasIguais = valorRestante / parcelasRestantes;
+                    }
+                    else if (novoNumeroParcelas == 1)
+                    {
+                        valorDaPrimeira = novoValorTotal;
+                    }
+
+                    DateTime dataInicial = DataVendaOriginal;
+
+                    for (int i = 1; i <= novoNumeroParcelas; i++)
+                    {
+                        DateTime dataVencimento = dataInicial.AddMonths(i);
+                        decimal valorAtual = (i == 1) ? valorDaPrimeira : valorParcelasIguais;
+
+                        vendaToUpdate.Parcelas.Add(new Parcela
                         {
-                            valorDaPrimeira = ValorTotal / NumeroParcelas;
-                        }
-
-                        decimal valorRestante = ValorTotal - valorDaPrimeira;
-                        int parcelasRestantes = NumeroParcelas - 1;
-
-                        decimal valorParcelasIguais = 0;
-
-                        if (parcelasRestantes > 0)
-                        {
-                            valorParcelasIguais = valorRestante / parcelasRestantes;
-                        }
-                        else if (NumeroParcelas == 1)
-                        {
-                            valorDaPrimeira = ValorTotal;
-                        }
-
-                        DateTime dataInicial = DataVendaOriginal; // Usa a data vinculada do campo oculto
-
-                        for (int i = 1; i <= NumeroParcelas; i++)
-                        {
-                            DateTime dataVencimento = dataInicial.AddMonths(i);
-                            decimal valorAtual = (i == 1) ? valorDaPrimeira : valorParcelasIguais;
-
-                            vendaToUpdate.Parcelas.Add(new Parcela
-                            {
-                                NumeroParcela = i,
-                                ValorParcela = Math.Round(valorAtual, 2),
-                                DataVencimento = dataVencimento,
-                                Status = "Aberta"
-                            });
-                        }
+                            NumeroParcela = i,
+                            ValorParcela = Math.Round(valorAtual, 2),
+                            DataVencimento = dataVencimento,
+                            Status = "Aberta"
+                        });
                     }
                 }
 
                 // 4. Salva todas as alterações
                 await _context.SaveChangesAsync();
-
                 return RedirectToPage("./DevedoresIndex");
             }
             catch (Exception ex)
             {
-                // Captura e exibe o erro real (o erro que estava quebrando o ModelState)
                 ViewData["ErrorMessage"] = "Erro Crítico: " + ex.Message;
                 return Page();
             }

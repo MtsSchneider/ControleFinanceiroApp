@@ -3079,23 +3079,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\mtsga\\.nuget\\packages\\": {},
+    "C:\\Users\\matheus.farias\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\mtsga\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\ControleFinanceiroApp.csproj",
+      "projectUniqueName": "C:\\Users\\matheus.farias\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\ControleFinanceiroApp.csproj",
       "projectName": "ControleFinanceiroApp",
-      "projectPath": "C:\\Users\\mtsga\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\ControleFinanceiroApp.csproj",
-      "packagesPath": "C:\\Users\\mtsga\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\mtsga\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\obj\\",
+      "projectPath": "C:\\Users\\matheus.farias\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\ControleFinanceiroApp.csproj",
+      "packagesPath": "C:\\Users\\matheus.farias\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\matheus.farias\\source\\repos\\MtsSchneider\\ControleFinanceiroApp\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\mtsga\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\matheus.farias\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

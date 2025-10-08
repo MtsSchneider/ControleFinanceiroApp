@@ -21,5 +21,7 @@ namespace ControleFinanceiroApp.Data
 			public DbSet<Venda> Vendas {get; set;}
 			
 			public DbSet<Parcela> Parcelas {get;set;}
+
+		public DbSet<HistoricoPagamentoVenda> HistoricoPagamentosVenda { get; set; } = default!;
 	}
 }

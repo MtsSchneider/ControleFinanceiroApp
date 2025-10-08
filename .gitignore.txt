@@ -1,0 +1,21 @@
+# Arquivos e diretórios gerados pelo Visual Studio (VS) e .NET Core
+
+# Diretório de cache do Visual Studio (Causa principal do erro 'Permission denied')
+.vs/
+
+# Diretórios de build (bin e obj)
+[Bb]in/
+[Oo]bj/
+
+# Arquivos de configurações do usuário
+*.user
+*.suo
+*.sln.docstates
+
+# Pacotes e Ferramentas NuGet
+.nuget/
+[Dd]ebug/
+[Rr]elease/
+
+# Testes de cobertura
+*.codecoverage

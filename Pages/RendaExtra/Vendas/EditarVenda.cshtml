@@ -8,15 +8,15 @@
     <h1>@ViewData["Title"]</h1>
     <h4>Venda #@Model.VendaOriginal.Id</h4>
     <p>
-        Use este formulário para corrigir dados cadastrais. 
+        Use este formulário para corrigir dados cadastrais.
         @if (!Model.PodeEditarValores)
         {
             <span class="text-danger fw-bold">Não é possível editar o Valor e Parcelas, pois já existem pagamentos registrados.</span>
         }
     </p>
-    
+
     <hr />
-    
+
     @if (ViewData["ErrorMessage"] != null)
     {
         <div class="alert alert-danger">@ViewData["ErrorMessage"]</div>
@@ -27,8 +27,11 @@
             <form method="post">
                 @Html.AntiForgeryToken()
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                
-                <input type="hidden" asp-for="VendaId" /> <input type="hidden" asp-for="DataVendaOriginal" /> <div class="mb-3">
+
+                <input type="hidden" asp-for="VendaId" />
+                <input type="hidden" asp-for="DataVendaOriginal" />
+
+                <div class="mb-3">
                     <label asp-for="NomeComprador" class="form-label"></label>
                     <input asp-for="NomeComprador" class="form-control" />
                     <span asp-validation-for="NomeComprador" class="text-danger"></span>
@@ -42,12 +45,13 @@
                     }
                     else
                     {
-                        <input asp-for="ValorTotal" class="form-control" type="text" inputmode="decimal" readonly="readonly" data-val="true" data-val-number="O campo Valor Total deve ser um número." />
-                        <small class="text-muted">Somente leitura após o primeiro pagamento.</small>
+                        <p class="form-control-static"><strong>@Model.VendaOriginal.ValorTotal.ToString("C")</strong></p>
+                        <input type="hidden" asp-for="ValorTotal" />
+                        <small class="text-muted">Valor Fixo após pagamento.</small>
                     }
                     <span asp-validation-for="ValorTotal" class="text-danger"></span>
                 </div>
-                
+
                 <div class="mb-3">
                     <label asp-for="NumeroParcelas" class="form-label"></label>
                     @if (Model.PodeEditarValores)
@@ -56,26 +60,31 @@
                     }
                     else
                     {
-                        <input asp-for="NumeroParcelas" class="form-control" type="number" readonly="readonly" />
-                        <small class="text-muted">Somente leitura após o primeiro pagamento.</small>
+                        <p class="form-control-static"><strong>@Model.VendaOriginal.NumeroParcelas</strong></p>
+                        <input type="hidden" asp-for="NumeroParcelas" />
+                        <small class="text-muted">Número Fixo de parcelas.</small>
                     }
                     <span asp-validation-for="NumeroParcelas" class="text-danger"></span>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="ValorPrimeiraParcela" class="form-label"></label>
-                    @if (Model.PodeEditarValores)
-                    {
+                @if (Model.PodeEditarValores)
+                {
+                    <div class="mb-3">
+                        <label asp-for="ValorPrimeiraParcela" class="form-label"></label>
                         <input asp-for="ValorPrimeiraParcela" class="form-control" type="text" inputmode="decimal" data-val-number="O campo deve ser um número." />
                         <small class="text-muted">Deixe 0 ou em branco para que o sistema recalcule todas as parcelas igualmente.</small>
-                    }
-                    else
-                    {
-                        <input asp-for="ValorPrimeiraParcela" class="form-control" type="text" inputmode="decimal" readonly="readonly" />
-                        <small class="text-muted">Este valor está fixo após o primeiro pagamento.</small>
-                    }
-                    <span asp-validation-for="ValorPrimeiraParcela" class="text-danger"></span>
-                </div>
+                        <span asp-validation-for="ValorPrimeiraParcela" class="text-danger"></span>
+                    </div>
+                }
+                else
+                {
+                    <div class="mb-3">
+                        <label asp-for="ValorPrimeiraParcela" class="form-label"></label>
+                        <p class="form-control-static"><strong>@Model.VendaOriginal.Parcelas?.FirstOrDefault(p => p.NumeroParcela == 1)?.ValorParcela.ToString("C")</strong></p>
+                        <input type="hidden" asp-for="ValorPrimeiraParcela" />
+                        <small class="text-muted">Valor fixo da 1ª parcela.</small>
+                    </div>
+                }
 
 
                 <div class="mb-3">
@@ -88,17 +97,19 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script>
         $(document).ready(function () {
             // Script para garantir que vírgulas sejam tratadas como pontos no envio (ValorTotal)
-            $("#ValorTotal").on("input", function () { 
+            $("#ValorTotal").on("input", function () {
                 let value = $(this).val();
                 value = value.replace(",", ".");
                 $(this).val(value);
             });
             // Script para garantir que vírgulas sejam tratadas como pontos no envio (ValorPrimeiraParcela)
-            $("#ValorPrimeiraParcela").on("input", function () { 
+            $("#ValorPrimeiraParcela").on("input", function () {
                 let value = $(this).val();
                 value = value.replace(",", ".");
                 $(this).val(value);

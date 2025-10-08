@@ -1,0 +1,40 @@
+﻿@page
+@model ControleFinanceiroApp.Pages.RendaExtra.Vendas.HistoricoPagamentosModel
+@{
+    ViewData["Title"] = "Histórico de Recebimentos (Vendas)";
+}
+
+<h1>@ViewData["Title"]</h1>
+<p>
+    <a asp-page="./DevedoresIndex" class="btn btn-secondary">Voltar para Devedores</a>
+</p>
+<hr />
+
+@if (Model.Historico.Any())
+{
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Data Pagamento</th>
+                <th>Comprador</th>
+                <th>Valor Pago</th>
+                <th>Tipo</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Historico)
+            {
+                <tr>
+                    <td>@item.DataPagamento.ToShortDateString()</td>
+                    <td>@item.NomeComprador</td>
+                    <td class="fw-bold text-success">@item.ValorPago.ToString("C")</td>
+                    <td>@item.TipoPagamento</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">Ainda não há registros de pagamentos.</div>
+}

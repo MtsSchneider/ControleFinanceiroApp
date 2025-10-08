@@ -16,6 +16,18 @@
 
 <p>
     <a asp-page="./DevedoresIndex" class="btn btn-secondary">Voltar para Devedores</a>
+
+    @if (Model.Venda.SaldoDevedor > 0)
+    {
+        <form method="post" asp-page-handler="PagarCompleto" asp-route-id="@Model.Venda.Id" asp-antiforgery="true" style="display:inline;">
+            @Html.AntiForgeryToken()
+            <button type="submit"
+                    class="btn btn-success ms-2"
+                    onclick="return confirm('ATENÇÃO: Confirma o pagamento completo de @Model.Venda.SaldoDevedor.ToString("C")? Esta ação é irreversível.');">
+                Pagamento Completo
+            </button>
+        </form>
+    }
 </p>
 
 <table class="table table-striped">

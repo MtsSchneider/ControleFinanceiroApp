@@ -89,5 +89,6 @@ namespace ControleFinanceiroApp.Pages.RendaExtra.Vendas
         {
             public DateTime? ProximoVencimento { get; set; }
         }
+
     }
 }
